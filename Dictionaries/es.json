@@ -1,0 +1,14 @@
+{
+"lang": "es",
+"fullName": "Spanish",
+"dict": {
+      "cześć": "hola",
+    "dziękuje": "gracias",
+    "prosze": "de nada",
+    "przepraszam": "lo siento",
+    "dobranoc": "buenas noches",
+    "dzień dobry": "buenos días",
+    "dobry wieczór": "buenas tardes",
+    "do widzenia": "adiós"
+	}
+}

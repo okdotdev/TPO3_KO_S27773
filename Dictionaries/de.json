@@ -1,0 +1,14 @@
+{
+  "lang": "de",
+  "fullName": "German",
+  "dict": {
+    "cześć": "hallo",
+    "dziękuje": "danke",
+    "prosze": "bitte",
+    "przepraszam": "entschuldigung",
+    "dobranoc": "gute nacht",
+    "dzień dobry": "guten tag",
+    "dobry wieczór": "guten abend",
+    "do widzenia": "auf wiedersehen"
+  }
+}

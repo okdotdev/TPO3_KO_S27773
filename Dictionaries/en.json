@@ -1,0 +1,14 @@
+{
+"lang": "EN",
+"fullName": "English",
+"dict": {
+    "cześć": "hello",
+    "dziękuje": "thank you",
+    "prosze": "please",
+    "przepraszam": "sorry",
+    "dobranoc": "good night",
+    "dzień dobry": "good morning",
+    "dobry wieczór": "good evening",
+    "do widzenia": "goodbye"
+	}
+}
