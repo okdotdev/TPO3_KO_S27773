@@ -5,45 +5,37 @@ import java.awt.event.ActionListener;
 
 public class ClientController implements ActionListener {
 
-   private ClientView gui;
+    private final ClientView clientView;
+    private final ClientModel clientModel;
+
+    public ClientController(ClientView clientView, ClientModel clientModel) {
+        this.clientView = clientView;
+        this.clientModel = clientModel;
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        translateButtonAction();
     }
 
     private void translateButtonAction() {
-        String lang = gui.getLanguageListSelection();
-        String word = gui.getToTranslation();
+        String lang = clientView.getLanguage();
+        String word = clientView.getWordToTranslate();
 
-        if (lang != null && !word.isEmpty()){
-            try {
-                int port = server.createNewSocket();
+        clientModel.sendTranslationRequest(word, lang);
 
-                String requestMessage = "TRANSLATE@@@"+lang+"@@@"+port +"@@@" + word;
-                server.sendRequest(server.middleServerIP, server.middleServerPort, requestMessage,false);
-                String response = server.waitForResponse();
+        String response = clientModel.getTranslationResponse();
 
-                String[] arr = response.split("@@@");
+        String[] arr = response.split("@@@");
 
-                // TRANSLATE@@@WORD_TO_TRANSLATE@@@TRANSLATED_WORD
-                if (arr.length == 3){
-                    if (arr[2].equals("null")) {
-                        gui.setResultOfTranslation("Word is not in dictionary.", true);
-                    }
-                    else
-                        gui.setResultOfTranslation(arr[2], false);
-                }
-                else
-                    gui.setResultOfTranslation("Error with getting translation", true);
+        if (arr.length == 3) {
+            if (arr[2].equals("null")) {
+                clientView.setResultOfTranslation("Word is not in dictionary.");
+            } else
+                clientView.setResultOfTranslation(arr[2]);
+        } else
+            clientView.setResultOfTranslation("Error with getting translation");
 
-            } catch (IOException e) {
-                server.middleServerIP = null;
-                server.middleServerPort = 0;
 
-                gui.setResultOfTranslation("Error with getting translation", true);
-                System.err.println("Couldn't get translation" + e.getMessage());
-            }
-        }
     }
 }

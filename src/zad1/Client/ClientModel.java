@@ -5,55 +5,55 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
 
-public class ClientModel implements Runnable {
-    PrintWriter out;
-    BufferedReader in;
+public class ClientModel {
+    private PrintWriter out;
+    private BufferedReader in;
+    private final int port;
 
+    Socket socket;
 
-    public ClientModel() {
-        try (Socket socket = new Socket("localhost", 1500)) {
+    public ClientModel(int serverPort) {
+        this.port = serverPort;
+        try {
+            socket = new Socket("127.0.0.1", serverPort);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            //DEBUG:
+            sendTranslationRequest("dog", "EN");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    @Override
-    public void run() {
 
-        Scanner sc = new Scanner(System.in);
-        String line = null;
-        while (!"exit".equalsIgnoreCase(line)) {
-
-            line = sc.nextLine();
-
-            out.println(line);
-            out.flush();
-
-
-        }
-
-        // closing the scanner object
-        sc.close();
+    public void sendTranslationRequest(String word, String language) {
+        String requestMessage = "TRANSLATE@@@" + language.toUpperCase() + "@@@" + port + "@@@" + word;
+        out.println(requestMessage);
     }
 
-    public void receiveMessage() {
+
+    public String getTranslationResponse() {
+
         try {
-            String line = null;
-            while ((line = in.readLine()) != null) {
-                System.out.println(line);
-            }
+            String response = in.readLine();
+            String[] arr = response.split("@@@");
+            if (arr.length == 3) {
+                if (arr[2].equals("null")) {
+                    System.out.println("Word is not in dictionary.");
+                } else
+                    System.out.println(arr[2]);
+            } else
+                System.out.println("Error with getting translation");
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Couldn't get translation" + e.getMessage());
+
         }
+        return null;
     }
 
-    public void sendMessage(String message) {
-        out.println(message);
-        out.flush();
-    }
+
 }
 
 

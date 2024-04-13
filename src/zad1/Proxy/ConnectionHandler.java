@@ -18,24 +18,35 @@ public class ConnectionHandler implements Runnable {
         try {
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String message = in.readLine();
-            System.out.println("Received message: " + message);
-            String[] tokens = message.split("@@@");
-            String command = tokens[0];
 
-            switch (command) {
-                case "PING":
-                    out.println("PONG");
-                    break;
-                case "ADD":
-                    proxyServer.addLanguageServer(message, this);
-                    break;
-                case "TRANSLATE":
-                    proxyServer.sendTranslateMessageRequest(message, this);
-                    break;
-                default:
-                    System.out.println("Unknown message: " + message);
+            boolean running = true;
+
+            while (running) {
+                String message = in.readLine();
+
+                if (message != null) {
+                    System.out.println("Received message: " + message);
+                    String[] tokens = message.split("@@@");
+                    String command = tokens[0];
+
+                    switch (command) {
+                        case "PING":
+                            out.println("PONG");
+                            break;
+                        case "ADD":
+                            proxyServer.addLanguageServer(message, this);
+                            break;
+                        case "TRANSLATE":
+                            proxyServer.sendTranslateMessageRequest(message, this);
+                            break;
+                        default:
+                            running = false;
+                            break;
+                    }
+                }
             }
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
